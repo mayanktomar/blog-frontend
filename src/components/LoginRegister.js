@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import login from '../assets/login.svg';
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
+import RegisterModal from './RegisterModal';
 
 export class LoginRegister extends Component {
 
@@ -8,7 +9,9 @@ export class LoginRegister extends Component {
     super(props);
     this.state = {
       isLoginModalOpen: false,
-      isRegisterModalOpen: false
+      isRegisterModalOpen: false,
+      emailForLogin: '',
+      passwordForLogin: ''
     }
   }
 
@@ -24,7 +27,17 @@ export class LoginRegister extends Component {
     })
   }
 
+  handleFormInputChanges = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({
+      [name]:value
+    })
+  }
 
+  onLoginSubmit = () => {
+    console.log()
+  }
   render() {
     return (
       <div className='container'>
@@ -77,26 +90,7 @@ export class LoginRegister extends Component {
         </ModalFooter>
         </Modal>
 
-        <Modal isOpen={this.state.isRegisterModalOpen} toggle={this.toggleRegisterModal}>
-        <ModalHeader toggle={this.toggleRegisterModal}>Register Modal</ModalHeader>
-        <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.toggleRegisterModal}>
-            Do Something
-          </Button>{' '}
-          <Button color="secondary" onClick={this.toggleRegisterModal}>
-            toggleRegisterModal
-          </Button>
-        </ModalFooter>
-        </Modal>
+      <RegisterModal isRegisterModalOpen={this.state.isRegisterModalOpen} toggleRegisterModal={this.toggleRegisterModal} handleFormInputChanges={this.handleFormInputChanges}/>
       </div>
     )
   }
