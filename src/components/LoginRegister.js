@@ -1,14 +1,24 @@
 import React, { Component } from 'react';
 import login from '../assets/login.svg';
 import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
-
+import RegisterModal from './RegisterModal';
+import axios from 'axios';
+import LoginModal from './LoginModal';
+import { authContext } from '../auth';
 export class LoginRegister extends Component {
-
+  static contextType = authContext;
   constructor(props) {
     super(props);
     this.state = {
       isLoginModalOpen: false,
-      isRegisterModalOpen: false
+      isRegisterModalOpen: false,
+      nameForRegister: '',
+      emailForRegister: '',
+      passwordForRegister: '',
+      genderForRegister: '',
+      interestsForRegister: '',
+      emailForLogin: '',
+      passwordForLogin: ''
     }
   }
 
@@ -24,7 +34,69 @@ export class LoginRegister extends Component {
     })
   }
 
+  onValueChange = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({
+      [name] : value
+    })
+  }
 
+  onRegisterSubmit =  async () => {
+    //Cricket, Politics, Lifestyle
+    const interestsArray = this.state.interestsForRegister.split(',');
+    if (!this.state.nameForRegister || !this.state.emailForRegister || !this.state.passwordForRegister) {
+      alert("Required input are not given");
+      return;
+    }
+     const data = {
+      name: this.state.nameForRegister,
+      email: this.state.emailForRegister,
+      password: this.state.passwordForRegister,
+      gender: this.state.genderForRegister,
+      interests: interestsArray
+    }
+    try {
+      const response = await axios.post('http://localhost:5000/api/createUser',data);
+      alert("User created successfully");
+      this.toggleRegisterModal();
+    } catch (err) {
+      alert('User registration failed');
+    }
+    
+  }
+
+  onLoginSubmit = async () => {
+    if (!this.state.emailForLogin || !this.state.passwordForLogin) {
+      alert("Required inputs are not given");
+      return;
+    }
+    const data = {
+      emailId: this.state.emailForLogin,
+      password: this.state.passwordForLogin
+    }
+
+    try {
+      const loginResponse = await axios.post('http://localhost:5000/api/loginUser',data);
+      console.log("Login Api response.......",loginResponse.data);
+      if (loginResponse.data.status=='error') {
+        alert (`Login failed, reason: ${loginResponse.data.message}`);
+      } else {
+        alert('Login successful');
+        localStorage.setItem('userEmailId',loginResponse.data.message.emailId);
+        localStorage.setItem('authToken',loginResponse.data.message.token);
+        localStorage.setItem('userId',loginResponse.data.message.userId);
+        localStorage.setItem('interests',loginResponse.data.message.interests);
+        this.context.setAuthToken(loginResponse.data.message.token);
+        this.context.setEmailId(loginResponse.data.message.emailId);
+        this.context.setUserId(loginResponse.data.message.userId);
+        this.toggleLoginModal();
+      }
+    } catch (err) {
+      console.log("Error from api....",err);
+      alert("Login failed:(")
+    }
+  }
   render() {
     return (
       <div className='container'>
@@ -56,47 +128,9 @@ export class LoginRegister extends Component {
           </div>
         </div>
 
-        <Modal isOpen={this.state.isLoginModalOpen} toggle={this.toggleLoginModal}>
-        <ModalHeader toggle={this.toggleLoginModal}>Login Modal</ModalHeader>
-        <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.toggleLoginModal}>
-            Do Something
-          </Button>{' '}
-          <Button color="secondary" onClick={this.toggleLoginModal}>
-            Cancel
-          </Button>
-        </ModalFooter>
-        </Modal>
-
-        <Modal isOpen={this.state.isRegisterModalOpen} toggle={this.toggleRegisterModal}>
-        <ModalHeader toggle={this.toggleRegisterModal}>Register Modal</ModalHeader>
-        <ModalBody>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </ModalBody>
-        <ModalFooter>
-          <Button color="primary" onClick={this.toggleRegisterModal}>
-            Do Something
-          </Button>{' '}
-          <Button color="secondary" onClick={this.toggleRegisterModal}>
-            toggleRegisterModal
-          </Button>
-        </ModalFooter>
-        </Modal>
+        
+       <LoginModal isLoginModalOpen={this.state.isLoginModalOpen} toggleLoginModal={this.toggleLoginModal} onValueChange={this.onValueChange} onLoginSubmit={this.onLoginSubmit}/>   
+       <RegisterModal isRegisterModalOpen={this.state.isRegisterModalOpen} toggleRegisterModal={this.toggleRegisterModal} onValueChange={this.onValueChange} onRegisterSubmit={this.onRegisterSubmit}/>
       </div>
     )
   }
