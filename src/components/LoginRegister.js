@@ -4,9 +4,15 @@ import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import RegisterModal from './RegisterModal';
 import axios from 'axios';
 import LoginModal from './LoginModal';
-import { authContext } from '../auth';
+import { AuthContext } from '../auth';
+import { Navigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { redirect } from "react-router-dom";
+
+// import {useHistory} from "react-router-dom";
 export class LoginRegister extends Component {
-  static contextType = authContext;
+  static contextType = AuthContext;
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -66,7 +72,11 @@ export class LoginRegister extends Component {
     
   }
 
-  onLoginSubmit = async () => {
+  onLoginSubmit = async (event) => {
+    //const navigate = useNavigate();
+    //e.preventDefault();
+    // let history = useHistory();
+    event.preventDefault();
     if (!this.state.emailForLogin || !this.state.passwordForLogin) {
       alert("Required inputs are not given");
       return;
@@ -82,15 +92,21 @@ export class LoginRegister extends Component {
       if (loginResponse.data.status=='error') {
         alert (`Login failed, reason: ${loginResponse.data.message}`);
       } else {
-        alert('Login successful');
+        //alert('Login successful');
         localStorage.setItem('userEmailId',loginResponse.data.message.emailId);
         localStorage.setItem('authToken',loginResponse.data.message.token);
         localStorage.setItem('userId',loginResponse.data.message.userId);
         localStorage.setItem('interests',loginResponse.data.message.interests);
-        this.context.setAuthToken(loginResponse.data.message.token);
-        this.context.setEmailId(loginResponse.data.message.emailId);
-        this.context.setUserId(loginResponse.data.message.userId);
-        this.toggleLoginModal();
+        // this.context.setAuthToken(loginResponse.data.message.token);
+        // this.context.setEmailId(loginResponse.data.message.emailId);
+        // this.context.setUserId(loginResponse.data.message.userId);
+        //this.toggleLoginModal();
+        // return <Navigate to="/blogs"/>
+        // <Redirect to></Redirect>
+        // useNavigate('/blogs');
+        //history.push('/blogs');
+        //this.props.navigate("/blogs");
+        return redirect('/blogs');
       }
     } catch (err) {
       console.log("Error from api....",err);

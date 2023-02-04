@@ -3,9 +3,11 @@ import './App.css';
 import Header from './components/Header';
 import LoginRegister from './components/LoginRegister';
 import { useState, useEffect } from 'react';
-import { authContext } from './auth';
+import { AuthContext } from './auth';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogsView from './components/BlogsView';
+import { PrivateRoute } from './PrivateRoute';
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const [userEmailId, setEmailId] = useState(null);
@@ -37,7 +39,7 @@ function App() {
 
   return (
     <div className="App">
-      <authContext.Provider
+      <AuthContext.Provider
       value={{
         authToken,
         userEmailId,
@@ -51,11 +53,16 @@ function App() {
          <Router>
             <Routes>
               <Route exact path='/' element={<LoginRegister/>}/>
-              <Route exact path='/blogs' element={<BlogsView/>}/>
+              <Route path='/blogs' 
+                element = {
+                  <PrivateRoute>
+                    <BlogsView/>
+                  </PrivateRoute>
+                }
+              />
             </Routes>
          </Router>
-      <LoginRegister/>
-      </authContext.Provider>
+      </AuthContext.Provider>
         
      
     </div>
