@@ -4,9 +4,9 @@ import { Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import RegisterModal from './RegisterModal';
 import axios from 'axios';
 import LoginModal from './LoginModal';
-import { authContext } from '../auth';
+import { AuthContext } from '../auth';
 export class LoginRegister extends Component {
-  static contextType = authContext;
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.state = {
@@ -88,7 +88,7 @@ export class LoginRegister extends Component {
         localStorage.setItem('userId',loginResponse.data.message.userId);
         localStorage.setItem('interests',loginResponse.data.message.interests);
         this.context.setAuthToken(loginResponse.data.message.token);
-        this.context.setEmailId(loginResponse.data.message.emailId);
+        this.context.setUserEmailId(loginResponse.data.message.emailId);
         this.context.setUserId(loginResponse.data.message.userId);
         this.toggleLoginModal();
       }

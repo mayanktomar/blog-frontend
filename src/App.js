@@ -3,59 +3,56 @@ import './App.css';
 import Header from './components/Header';
 import LoginRegister from './components/LoginRegister';
 import { useState, useEffect } from 'react';
-import { authContext } from './auth';
+import { AuthContext } from './auth';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogsView from './components/BlogsView';
+import { PrivateRoute } from './PrivateRoute';
 
 function App() {
-  const [userEmailId, setEmailId] = useState(null);
-  const [authToken, setAuthToken] = useState(null);
-  const [userId, setUserId] = useState(null);
+const [userEmaillId, setUserEmailId] = useState(null);
+const [authToken, setAuthToken] = useState(null);
+const [userId, setUserId] = useState(null);
 
-  const getUserEmailId = () => {
-    let data = localStorage.getItem('userEmailId');
-    setEmailId(data);
-  }
+const getUserDetailsFromLocalStorage = () => {
+  let emailData = localStorage.getItem('userEmailId');
+  let authTokenData = localStorage.getItem('authToken');
+  let userIdData = localStorage.getItem('userId');
 
-  const getAuthToken = () => {
-    let data = localStorage.getItem('authToken');
-    setAuthToken(data);
-  }
+  setUserEmailId(emailData);
+  setAuthToken(authTokenData);
+  setUserId(userIdData);
+}
 
-  const getuserId = () => {
-    let data = localStorage.getItem('userId');
-    setUserId(data);
-  }
-
-  useEffect(() => {
-    getUserEmailId();
-    getAuthToken();
-    getuserId();
-  }, [])
-  
+useEffect(() => {
+  getUserDetailsFromLocalStorage();
+}, [])
 
 
   return (
     <div className="App">
-      <authContext.Provider
-      value={{
-        authToken,
-        userEmailId,
-        userId,
-        setAuthToken,
-        setEmailId,
-        setUserId
-      }}
-      >
-         <Header/>
-         <Router>
-            <Routes>
-              <Route exact path='/' element={<LoginRegister/>}/>
-              <Route exact path='/blogs' element={<BlogsView/>}/>
-            </Routes>
-         </Router>
-      <LoginRegister/>
-      </authContext.Provider>
+         <AuthContext.Provider
+         value={{
+          userEmaillId,
+          authToken,
+          userId,
+          setUserEmailId,
+          setAuthToken,
+          setUserId
+         }}>
+           <Header/>
+          <Router>
+              <Routes>
+                <Route exact path='/' element={<LoginRegister/>}/>
+                <Route exact path='/blogs' element={
+                  <PrivateRoute>
+                    <BlogsView/>
+                  </PrivateRoute>
+                }/>
+              </Routes>
+          </Router>
+         </AuthContext.Provider>
+        
+    
         
      
     </div>

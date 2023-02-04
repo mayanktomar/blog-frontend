@@ -1,15 +1,3 @@
-import { createContext, useContext } from "react";
+import { createContext } from "react";
 
-export const authContext = createContext({
-  authToken: null,
-  userEmailId: null,
-  userId: null,
-  setAuthToken: (data) => {},
-  setEmailId: (data) => {},
-  setUserId: (data) => {}
-});
-
-// export function useAuthContext() {
-//   return useContext(authContext);
-// }
-
+export const AuthContext = createContext(null);
