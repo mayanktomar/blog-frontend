@@ -7,7 +7,10 @@ import { AuthContext } from './auth';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogsView from './components/BlogsView';
 import { PrivateRoute } from './PrivateRoute';
+import { useNavigate } from "react-router-dom";
+import { RedirectForLogin } from './RedirectForLogin';
 
+//const navigate = useNavigate();
 function App() {
 const [userEmaillId, setUserEmailId] = useState(null);
 const [authToken, setAuthToken] = useState(null);
@@ -27,7 +30,9 @@ useEffect(() => {
   getUserDetailsFromLocalStorage();
 }, [])
 
-
+// changeRoute = () => {
+//   useNavigate('/blogs');
+// }
   return (
     <div className="App">
          <AuthContext.Provider
@@ -42,7 +47,11 @@ useEffect(() => {
            <Header/>
           <Router>
               <Routes>
-                <Route exact path='/' element={<LoginRegister/>}/>
+                <Route exact path='/' element={
+                  <RedirectForLogin>
+                    <LoginRegister/>
+                  </RedirectForLogin>
+                }/>
                 <Route exact path='/blogs' element={
                   <PrivateRoute>
                     <BlogsView/>
@@ -58,5 +67,7 @@ useEffect(() => {
     </div>
   );
 }
+
+
 
 export default App;

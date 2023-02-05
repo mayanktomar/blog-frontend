@@ -16,10 +16,11 @@ export class BlogsView extends Component {
     const authToken = localStorage.getItem('authToken');
     const interests = localStorage.getItem('interests');
     const interestsArray = interests.split(',');
-    this.setState({
-      userInterests: interestsArray
-    });
+    // this.setState({
+    //   userInterests: interestsArray
+    // });
     console.log("Interests............",interestsArray);
+    console.log("state of interests...",this.state.userInterests);
     const headers = {
       authorization: authToken
     }
@@ -32,8 +33,10 @@ export class BlogsView extends Component {
       });
       console.log("blog api response....",blogApiReponse);
       this.setState({
-        blogsData:blogApiReponse.data
+        blogsData:blogApiReponse.data,
+        userInterests: interestsArray
       })
+      console.log(JSON.stringify(this.state))
     } catch (err) {
       console.log("errrrr..........",err);
     }

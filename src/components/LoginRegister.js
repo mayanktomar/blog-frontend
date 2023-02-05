@@ -5,6 +5,8 @@ import RegisterModal from './RegisterModal';
 import axios from 'axios';
 import LoginModal from './LoginModal';
 import { AuthContext } from '../auth';
+// import ChangeRoute from './ChangeRoute';
+import ChangeRo from './ChangeRo';
 export class LoginRegister extends Component {
   static contextType = AuthContext;
   constructor(props) {
@@ -82,7 +84,7 @@ export class LoginRegister extends Component {
       if (loginResponse.data.status=='error') {
         alert (`Login failed, reason: ${loginResponse.data.message}`);
       } else {
-        alert('Login successful');
+        //alert('Login successful');
         localStorage.setItem('userEmailId',loginResponse.data.message.emailId);
         localStorage.setItem('authToken',loginResponse.data.message.token);
         localStorage.setItem('userId',loginResponse.data.message.userId);
@@ -90,7 +92,9 @@ export class LoginRegister extends Component {
         this.context.setAuthToken(loginResponse.data.message.token);
         this.context.setUserEmailId(loginResponse.data.message.emailId);
         this.context.setUserId(loginResponse.data.message.userId);
-        this.toggleLoginModal();
+        //this.toggleLoginModal();
+        //this.props.changeRoute();
+        //<ChangeRo />
       }
     } catch (err) {
       console.log("Error from api....",err);
