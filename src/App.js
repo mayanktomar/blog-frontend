@@ -7,6 +7,7 @@ import { AuthContext } from './auth';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import BlogsView from './components/BlogsView';
 import { PrivateRoute } from './PrivateRoute';
+import { RedirectForLogin } from './RedirectForLogin';
 
 function App() {
 const [userEmaillId, setUserEmailId] = useState(null);
@@ -42,7 +43,11 @@ useEffect(() => {
            <Header/>
           <Router>
               <Routes>
-                <Route exact path='/' element={<LoginRegister/>}/>
+                <Route exact path='/' element={
+                  <RedirectForLogin>
+                    <LoginRegister/>
+                  </RedirectForLogin>
+                }/>
                 <Route exact path='/blogs' element={
                   <PrivateRoute>
                     <BlogsView/>

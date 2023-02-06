@@ -3,11 +3,12 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
-export {PrivateRoute};
-function PrivateRoute({children}) {
+export {RedirectForLogin};
+function RedirectForLogin({children}) {
   const userInfo = useContext(AuthContext);
 
   const authToken = localStorage.getItem('authToken');
+
   let isTokenActive = false;
 
   let decoded;
@@ -28,8 +29,8 @@ function PrivateRoute({children}) {
   // if (!userInfo.authToken) {
   //   return <Navigate to="/" />
   // } 
-  if (!(authToken && isTokenActive)) {
-    return <Navigate to="/" />
+  if (authToken && isTokenActive) {
+    return <Navigate to="/blogs" />
   }
 
   return children;
